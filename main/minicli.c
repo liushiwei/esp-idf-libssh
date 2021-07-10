@@ -15,7 +15,7 @@ struct minicli_command {
 	char *cmd;
 	void (*handler)(struct interactive_session *);
 };
-
+//@george 目前支持的命令
 struct minicli_command minicli_commands[] = {
 	{ "banner", minicli_command_banner},
 	{ "help", minicli_command_help},
@@ -75,13 +75,14 @@ minicli_command_help(struct interactive_session *is)
 		cc++;
 	}
 }
-
+//@george 提示符
 static void
 minicli_prompt(struct interactive_session *is)
 {
-	minicli_printf(is, "minicli> ");
+	minicli_printf(is, ":) > ");
 }
 
+//@george 输入解析命令
 void
 minicli_handle_command(struct interactive_session *is, const char *cmd)
 {
@@ -99,7 +100,7 @@ minicli_handle_command(struct interactive_session *is, const char *cmd)
 	minicli_printf(is, "%c? unknown command\n", 7);
 	minicli_prompt(is);
 }
-
+//@george 输入解析字符
 static void
 minicli_handle_char(struct interactive_session *is, char c)
 {
