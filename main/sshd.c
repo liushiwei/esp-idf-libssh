@@ -238,6 +238,9 @@ pty_resize(ssh_session session, ssh_channel channel, int cols,
 	return SSH_OK;
 }
 
+/**
+ * @brief george 打开一个新的ssh通道
+ */
 static ssh_channel
 channel_open(ssh_session session, void *userdata)
 {
@@ -332,7 +335,10 @@ dead_eater(struct server_ctx *sc)
 		cc_removed = NULL;
 	}
 }
-
+/**
+ * @brief george 启动ssh服务
+ *
+ */
 static int
 create_new_server(struct server_ctx *sc)
 {
@@ -389,6 +395,9 @@ terminate_server(struct server_ctx *sc)
 	free(sc);
 }
 
+/**
+ * @brief george sshd 入口函数
+ */
 int
 sshd_main(struct server_ctx *sc)
 {

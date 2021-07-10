@@ -89,6 +89,9 @@ sshd_task(void *arg)
 	sshd_main(sc);
 }
 
+/**
+ * @brief george 启动sshd task
+ */
 void
 start_sshd(void)
 {
