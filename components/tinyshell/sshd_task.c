@@ -4,7 +4,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include <sys/queue.h>
-#include "example.h"
+#include "tinyshell.h"
 #include "sshd.h"
 
 /* change this */

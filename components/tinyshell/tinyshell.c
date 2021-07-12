@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdarg.h>
 #include <string.h>
-#include "example.h"
+#include "tinyshell.h"
 
 char next_command[16];
 uint8_t next_command_idx = 0;

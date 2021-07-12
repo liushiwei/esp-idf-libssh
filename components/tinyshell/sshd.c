@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <sys/queue.h>
 #include <stddef.h>
-#include "example.h"
+#include "tinyshell.h"
 #include "sshd.h"
 
 static void handle_char_from_local(struct interactive_session *, char);

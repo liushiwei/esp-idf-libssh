@@ -1,6 +1,6 @@
 #include "freertos/FreeRTOS.h"
 #include "nvs_flash.h"
-#include "example.h"
+#include "tinyshell.h"
 
 static void
 initialize_nvs()

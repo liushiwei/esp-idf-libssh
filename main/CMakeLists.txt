@@ -1,6 +1,2 @@
-idf_component_register(SRCS "wifi.c"
-                            "main.c"
-                            "sshd.c"
-                            "sshd_task.c"
-                            "minicli.c"
+idf_component_register(SRCS "main.c"
                     INCLUDE_DIRS ".")
