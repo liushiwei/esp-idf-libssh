@@ -64,8 +64,8 @@ set(srcs
   ${SRC}/pki_ed25519.c
   ${SRC}/pki_ed25519_common.c
   ${SRC}/pki_mbedcrypto.c
+  ${SRC}/external/curve25519_ref.c
 )
-
 idf_component_register(SRCS "${srcs}"
                     INCLUDE_DIRS compat libssh/include
                     REQUIRES lwip mbedtls)
