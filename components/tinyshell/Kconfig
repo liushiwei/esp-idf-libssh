@@ -1,0 +1,6 @@
+menu "TinyShell"
+
+    config CMD_ECHO
+        bool "Enable CMD ECHO"
+        default y
+endmenu

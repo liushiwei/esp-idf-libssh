@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../uart_echo"
+		},
+		{
+			"path": "../esp32s2-usb-host-example"
 		}
 	],
 	"settings": {
