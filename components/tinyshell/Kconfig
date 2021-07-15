@@ -3,4 +3,7 @@ menu "TinyShell"
     config CMD_ECHO
         bool "Enable CMD ECHO"
         default y
+    config CMD_UART
+            bool "CMD UART SUPPORT"
+            default y
 endmenu

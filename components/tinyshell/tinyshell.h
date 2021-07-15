@@ -1,3 +1,4 @@
+#define MAX_CMD_LENGTH 128
 void initialize_wifi(void);
 void wifi_sta_join(const char* ssid, const char* pass);
 void start_sshd(void);
@@ -11,3 +12,6 @@ struct interactive_session {
 void minicli_handle_command(struct interactive_session *, const char *);
 void minicli_begin_interactive_session(struct interactive_session *);
 
+void minicli_printf(struct interactive_session *is, const char *fmt, ...);
+
+void minicli_prompt(struct interactive_session *is);

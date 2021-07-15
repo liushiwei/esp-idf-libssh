@@ -172,6 +172,7 @@ data_function(ssh_session session, ssh_channel channel, void *data, uint32_t len
 	char c;
 	for (i = 0; i < len; i++) {
 		c = ((char*)data)[i];
+		// george 如果是ctrl-D 结束SSHD
 		if (c == 0x4) /* ^D */ {
 			ssh_channel_send_eof(channel);
 			ssh_channel_close(channel);

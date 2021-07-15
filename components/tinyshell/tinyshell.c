@@ -3,27 +3,28 @@
 #include <stdarg.h>
 #include <string.h>
 #include "tinyshell.h"
+#include "command.h"
 
-char next_command[16];
+char next_command[MAX_CMD_LENGTH];
 uint8_t next_command_idx = 0;
 
 static void minicli_command_banner(struct interactive_session *);
 static void minicli_command_help(struct interactive_session *);
 static void minicli_command_noop(struct interactive_session *);
-
-struct minicli_command {
-	char *cmd;
-	void (*handler)(struct interactive_session *);
-};
+static void minicli_handle_char(struct interactive_session *is, char c);
+// struct minicli_command {
+// 	char *cmd;
+// 	void (*handler)(struct interactive_session *);
+// };
 /**
  * @brief george 目前支持的命令
  */
-struct minicli_command minicli_commands[] = {
-	{ "banner", minicli_command_banner},
-	{ "help", minicli_command_help},
-	{ "", minicli_command_noop},
-	{ NULL, NULL }
-};
+// struct minicli_command minicli_commands[] = {
+// 	{ "banner", minicli_command_banner},
+// 	{ "help", minicli_command_help},
+// 	{ "", minicli_command_noop},
+// 	{ NULL, NULL }
+// };
 
 void
 minicli_printf(struct interactive_session *is, const char *fmt, ...)
@@ -69,18 +70,18 @@ minicli_command_banner(struct interactive_session *is)
 static void
 minicli_command_help(struct interactive_session *is)
 {
-	struct minicli_command *cc;
+	cmd_tbl_t *cc;
 
-	cc = minicli_commands;
-	while (cc->cmd != NULL) {
-		minicli_printf(is, "	%s\n", cc->cmd);
+	cc = commands;
+	while (cc->name != NULL) {
+		minicli_printf(is, "	%s\n", cc->name);
 		cc++;
 	}
 }
 /**
  * @brief george 提示符
  */
-static void
+void
 minicli_prompt(struct interactive_session *is)
 {
 	minicli_printf(is, ":) > ");
@@ -92,12 +93,27 @@ minicli_prompt(struct interactive_session *is)
 void
 minicli_handle_command(struct interactive_session *is, const char *cmd)
 {
-	struct minicli_command *cc;
+	
+	cmd_tbl_t *cc = NULL;
+	cc = commands;
 
-	cc = minicli_commands;
-	while (cc->cmd != NULL) {
-		if (!strcmp(cmd, cc->cmd)) {
-			cc->handler(is);
+	while (cc->name != NULL) {
+		char *p;
+		char *delim = " ";
+		
+		p = strtok(cmd, delim);  //取出第一个字符串,为命令
+		ESP_LOGI("", "====p %s  name  %s  cmd %s",p,cc->name,cmd);
+		if (!strcmp(p, cc->name)) {
+			ESP_LOGI("", "==== %p %s",cc,cc->name);
+			int arg_num =0;
+			char * argv[cc->maxargs] ; 
+			while((p = strtok(NULL, delim))&&arg_num<(cc->maxargs)){
+				argv[arg_num] = p;
+        		printf("%s ", argv[arg_num]);
+				arg_num++;
+			}
+			cc->cmd(is,cc,0,arg_num,argv);
+			is->is_handle_char_from_remote = minicli_handle_char;
 			minicli_prompt(is);
 			return;
 		}
@@ -125,14 +141,14 @@ minicli_handle_char(struct interactive_session *is, char c)
 	} else if (c == 4) {
 		// ^D
 	} else if (c == 127) {
-		// backspace
+		// del 
 		if (next_command_idx > 0) {
 			minicli_printf(is, "%c %c", 8, 8);
 			next_command_idx--;
 		} else {
 			minicli_printf(is, "%c", 7);
 		}
-	} else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+	} else if (c >= 32 && c <= 126 ) {  // george 处理可显示的ascii字符
 		if (next_command_idx < sizeof(next_command) - 1) {
 			minicli_printf(is, "%c", c);
 			next_command[next_command_idx++] = c;

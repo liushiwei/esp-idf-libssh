@@ -11,10 +11,11 @@
 #ifndef __COMMAND_H
 #define __COMMAND_H
 
-
+#include "esp_log.h"
 #ifndef NULL
 #define NULL    0
 #endif
+
 
 /* Default to a width of 8 characters for help message command width */
 #ifndef CONFIG_SYS_HELP_CMD_WIDTH
@@ -31,7 +32,7 @@ struct cmd_tbl_s {
         int             maxargs;        /* maximum number of arguments  */
         int             repeatable;     /* autorepeat allowed?          */
                                         /* Implementation function      */
-        int             (*cmd)(struct cmd_tbl_s *, int, int, char * const []);
+        int             (*cmd)(struct interactive_session *,struct cmd_tbl_s *, int, int, char * const []);
         char            *usage;         /* Usage message        (short) */
         char            *help;          /* Help  message        (long)  */
 #ifdef CONFIG_AUTO_COMPLETE
@@ -139,16 +140,6 @@ int cmd_process(int flag, int argc, char * const argv[],
                 #_name, _maxargs, _rep, _cmd, _usage, _help, NULL       \
         };                                                              
 
-cmd_tbl_t commands_[] = {
 
-#ifdef CONFIG_CMD_ECHO
-        { "echo",   CONFIG_SYS_MAXARGS,     1,      do_echo,
-        "echo args to console",
-        "[args..]\n"
-        "    - echo args to console; \\c suppresses newline"
-        }
-#endif
-
-};
-
+extern cmd_tbl_t commands[];
 #endif  /* __COMMAND_H */
