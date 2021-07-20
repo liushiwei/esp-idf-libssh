@@ -15,3 +15,4 @@ void minicli_begin_interactive_session(struct interactive_session *);
 void minicli_printf(struct interactive_session *is, const char *fmt, ...);
 
 void minicli_prompt(struct interactive_session *is);
+void minicli_putchar(struct interactive_session *is, const char fmt);

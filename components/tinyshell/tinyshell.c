@@ -25,6 +25,11 @@ static void minicli_handle_char(struct interactive_session *is, char c);
 // 	{ "", minicli_command_noop},
 // 	{ NULL, NULL }
 // };
+void
+minicli_putchar(struct interactive_session *is, const char fmt)
+{
+	is->is_handle_char_from_local(is, fmt);
+}
 
 void
 minicli_printf(struct interactive_session *is, const char *fmt, ...)
