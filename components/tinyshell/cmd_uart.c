@@ -26,6 +26,7 @@ extern struct interactive_session * sshd_session;
 static void uart_handle_output(struct interactive_session *is);
 int cancel_uart=0;
 int is_uart_start=0;
+char enter[] = "\r\n";
 /**
  * @brief george 输入解析字符
  */
@@ -75,13 +76,17 @@ void cmd_uart_task(void *arg){
         // Write data back to the UART
         // ESP_LOGI("CMD_UART", "uart get data %d",len);
         if(len>0&&is_uart_start){
-        ESP_LOGI("CMD_UART", "uart write to ssh %s",(char *)data);
+        
         // minicli_printf((struct interactive_session *)is,(char *)data);
         for(int i=0;i<len;i++){
             if (data[i] == '\r') {
-                data[i] = '\n';
+                ESP_LOGI("CMD_UART", "get  r  write n ");
+                xQueueSend(sshd_rx_queue,&enter[0],NULL);
+                xQueueSend(sshd_rx_queue,&enter[1],NULL);
+            }else{
+                xQueueSend(sshd_rx_queue,&data[i],NULL);
             }
-            xQueueSend(sshd_rx_queue,&data[i],NULL);
+            
         }
         }
         // ESP_LOGI("CMD_UART", "uart write to ssh end");
