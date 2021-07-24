@@ -20,6 +20,6 @@ app_main(void)
 	initialize_wifi();
 	/* replace with SSID and passphrase */
 	wifi_sta_join("HZX", "hzx123456");
-	start_sshd();
+	tinyshell_init();
 }
 

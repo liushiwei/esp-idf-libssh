@@ -2,7 +2,7 @@
 void initialize_wifi(void);
 void wifi_sta_join(const char* ssid, const char* pass);
 void start_sshd(void);
-
+void tinyshell_init(void);
 struct interactive_session {
 	void	(*is_handle_char_from_remote)(struct interactive_session *, char);
 	void	(*is_handle_char_from_local)(struct interactive_session *, char);
@@ -16,3 +16,4 @@ void minicli_printf(struct interactive_session *is, const char *fmt, ...);
 
 void minicli_prompt(struct interactive_session *is);
 void minicli_putchar(struct interactive_session *is, const char fmt);
+

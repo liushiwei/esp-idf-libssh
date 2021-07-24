@@ -9,6 +9,9 @@
 #include "tinyshell.h"
 #include "sshd.h"
 
+extern xQueueHandle sshd_rx_queue;  //需要显示给sshd客户端的内容
+extern xQueueHandle sshd_tx_queue;  //sshd客户端的内容
+extern struct interactive_session * sshd_session;
 static void handle_char_from_local(struct interactive_session *, char);
 
 /*
@@ -416,8 +419,15 @@ sshd_main(struct server_ctx *sc)
 	sc->sc_sshevent = event;
 	if (create_new_server(sc) != SSH_OK)
 		return SSH_ERROR;
-
+	//george sshd 无限循环
 	while (!time_to_die) {
+		if(sshd_session){
+			char intput_char;
+			if(xQueueReceive(sshd_rx_queue, &intput_char, 0)) {
+            	printf("- %c\n",intput_char);
+				minicli_putchar(sshd_session,intput_char);
+        	}
+		}
 		error = ssh_event_dopoll(sc->sc_sshevent, 1000);
 		if (error == SSH_ERROR || error == SSH_AGAIN) {
 			/* check if any clients are dead and consume 'em */

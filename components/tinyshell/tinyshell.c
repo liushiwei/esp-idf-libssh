@@ -4,6 +4,14 @@
 #include <string.h>
 #include "tinyshell.h"
 #include "command.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/queue.h"
+
+xQueueHandle sshd_rx_queue = NULL;  //需要显示给sshd客户端的内容
+xQueueHandle sshd_tx_queue = NULL;  //sshd客户端的内容
+
+struct interactive_session * sshd_session = NULL;
 
 char next_command[MAX_CMD_LENGTH];
 uint8_t next_command_idx = 0;
@@ -118,8 +126,8 @@ minicli_handle_command(struct interactive_session *is, const char *cmd)
 				arg_num++;
 			}
 			cc->cmd(is,cc,0,arg_num,argv);
-			is->is_handle_char_from_remote = minicli_handle_char;
-			minicli_prompt(is);
+			// is->is_handle_char_from_remote = minicli_handle_char;
+			// minicli_prompt(is);
 			return;
 		}
 		cc++;
@@ -166,7 +174,17 @@ minicli_handle_char(struct interactive_session *is, char c)
 void
 minicli_begin_interactive_session(struct interactive_session *is)
 {
+	sshd_session = is;
+	sshd_rx_queue = xQueueCreate(128, sizeof(char));
+	sshd_tx_queue = xQueueCreate(128, sizeof(char));
+	ESP_LOGI("", "cmd_init ----");
+	
 	is->is_handle_char_from_remote = minicli_handle_char;
 	minicli_command_banner(is);
 	minicli_prompt(is);
+}
+
+void tinyshell_init(){
+	start_sshd();
+	cmd_init();
 }
